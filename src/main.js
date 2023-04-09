@@ -3,11 +3,16 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueTippy from 'vue-tippy'
+import uiComponents from '@/components/UI/index'
 
 import './assets/main.css'
 import 'tippy.js/dist/tippy.css'
 
 const app = createApp(App)
+
+uiComponents.forEach(component => {
+    app.component(component.name, component);
+});
 
 app
     .use(store)
