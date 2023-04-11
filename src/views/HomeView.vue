@@ -124,12 +124,7 @@ export default {
   },
   computed: {
     isReadySendFormData() {
-      return this.v$.form.name.$invalid && this.v$.form.name.$error
-          || this.v$.form.email.$invalid && this.v$.form.email.$error
-          || this.v$.form.payment.$invalid && this.v$.form.payment.$error
-          || this.v$.form.distance.$invalid && this.v$.form.distance.$error
-          || this.v$.form.phone.$invalid && this.v$.form.phone.$error
-          || this.v$.form.date.$invalid && this.v$.form.date.$error;
+      return Object.keys(this.v$.form).some(key => this.v$.form[key].$invalid && this.v$.form[key].$error);
     }
   },
   methods: {
