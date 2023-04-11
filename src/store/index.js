@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import { ParticipantsModule } from "@/store/ParticipantsModule";
 export default createStore({
     state: {
     },
@@ -9,5 +10,6 @@ export default createStore({
     actions: {
     },
     modules: {
+        participants: ParticipantsModule
     }
 })
