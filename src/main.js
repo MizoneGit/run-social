@@ -2,13 +2,13 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import VueTippy from 'vue-tippy'
 import uiComponents from '@/components/UI/index'
+import Toast from "vue-toastification";
+
 import Vue3EasyDataTable from 'vue3-easy-data-table';
 import 'vue3-easy-data-table/dist/style.css';
-
+import "vue-toastification/dist/index.css";
 import './assets/main.scss'
-import 'tippy.js/dist/tippy.css'
 
 const app = createApp(App)
 app.component('EasyDataTable', Vue3EasyDataTable);
@@ -19,7 +19,7 @@ uiComponents.forEach(component => {
 app
     .use(store)
     .use(router)
-    .use(VueTippy, {
+    .use(Toast, {
         position: 'bottom-center',
         timeout: 3000,
         draggable: true,
