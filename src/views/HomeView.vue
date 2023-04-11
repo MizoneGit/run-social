@@ -67,11 +67,9 @@ import { useToast } from "vue-toastification";
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers, minLength, maxLength, maxValue, minValue, numeric } from '@vuelidate/validators';
 import { mapMutations } from "vuex";
-import VCheckbox from "@/components/UI/VCheckbox.vue";
 
 export default {
   name: 'HomeView',
-  components: {VCheckbox},
   data() {
     return {
       v$: useVuelidate(),
