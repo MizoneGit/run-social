@@ -1,64 +1,21 @@
 <template>
   <main>
-    <form action="" ref="formParticipants" class="v-form" @submit.prevent="submitHandler">
-      <v-input v-model="form.name"
-               label-text="ФИО"
-               type="text"
-               name="fio"
-               :isError="v$.form.name.$invalid && v$.form.name.$error"
-               :errorMessage="v$.form.name?.$errors[0]?.$message"
-               @blur="v$.form.name.$touch"
-      />
-      <v-input v-model="form.date"
-               label-text="Дата рождения"
-               type="date"
-               name="date"
-               :isError="v$.form.date.$invalid && v$.form.date.$error"
-               :errorMessage="v$.form.date?.$errors[0]?.$message"
-               @blur="v$.form.date.$touch"
-      />
-      <v-input v-model="form.email"
-               label-text="Email"
-               type="email"
-               name="email"
-               :isError="v$.form.email.$invalid && v$.form.email.$error"
-               :errorMessage="v$.form.email?.$errors[0]?.$message"
-               @blur="v$.form.email.$touch"
-      />
-      <v-input v-model="form.phone"
-               label-text="Телефон"
-               type="text"
-               name="phone"
-               :isError="v$.form.phone.$invalid && v$.form.phone.$error"
-               :errorMessage="v$.form.phone?.$errors[0]?.$message"
-               @blur="v$.form.phone.$touch"
-      />
-      <v-select v-model="form.distance"
-                label-text="Дистанция"
-                :options="optionsDistance"
-                name="distance"
-                :isError="v$.form.distance.$invalid && v$.form.distance.$error"
-                :errorMessage="v$.form.distance?.$errors[0]?.$message"
-                @blur="v$.form.distance.$touch"
-      />
-      <v-input v-model="form.payment"
-               label-text="Сумма взноса"
-               type="text"
-               name="payment"
-               :isError="v$.form.payment.$invalid && v$.form.payment.$error"
-               :errorMessage="v$.form.payment?.$errors[0]?.$message"
-               @blur="v$.form.payment.$touch"
-      />
-      <v-checkbox
-          v-model="isCreateProfile"
-          label-text="Согласие на создание профиля "
-          name="createProfile"
-      />
-      <v-button :disabled="isReadySendFormData"
-                text="Отправить заявку"
-                type="submit"
-      />
-    </form>
+    <VFormRun
+        v-if="!stepAuth"
+        @error="showErrorNotification"
+        @success="formRunSuccessHandler"
+        @reset="formRunResetHandler"
+        :participant="formRun"
+        :settings-form="{ buttonText: 'Отправить заявку' }"
+        ref="VFormRun"
+    />
+    <form-auth
+        v-else
+        :form-object="formAuth"
+        :settings-form="{ readOnlyFields: { email: true, password: false }, buttonText: 'Зарегистрироваться' }"
+        @success="formAuthSuccessHandler"
+        @error="showErrorNotification"
+    />
   </main>
 </template>
 
@@ -67,9 +24,12 @@ import { useToast } from "vue-toastification";
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers, minLength, maxLength, maxValue, minValue, numeric } from '@vuelidate/validators';
 import { mapMutations } from "vuex";
+import FormAuth from "@/components/formAuth.vue";
+import VFormRun from "@/components/VFormRun.vue";
 
 export default {
   name: 'HomeView',
+  components: {VFormRun, FormAuth },
   data() {
     return {
       v$: useVuelidate(),
@@ -78,16 +38,21 @@ export default {
         { value: 5, text: '5 км' },
         { value: 10, text: '10 км' },
       ],
-      form: {
+      formAuth: {
+        email: '',
+        password: ''
+      },
+      formRun: {
         name: '',
         date: '',
         email: '',
         phone: '',
         distance: '',
         payment: '',
+        isCreateProfile: false
       },
-      isCreateProfile: false,
-      toast: useToast()
+      toast: useToast(),
+      stepAuth: false
     }
   },
   validations () {
@@ -129,26 +94,31 @@ export default {
     ...mapMutations({
       addParticipants: 'participants/addParticipants'
     }),
-    submitHandler() {
-      if (this.v$.form.$invalid) {
-        this.v$.form.$touch();
-        this.showErrorNotification('Не все поля заполнены верно!')
-        return;
-      }
-
-      this.addParticipants(this.form);
+    formRunSuccessHandler(formData) {
+      this.formAuth.email = formData.email;
+      this.formRun = formData;
+      this.addParticipants(formData);
       this.showSuccessNotification('Вы успешно зарегистрировались в забеге!');
-      this.resetParticipantsForm();
+      if (formData.isCreateProfile) {
+        this.stepAuth = true;
+      }
+      this.$refs.VFormRun.resetForm();
     },
-    resetParticipantsForm() {
-      this.$refs.formParticipants.reset();
+    formRunResetHandler() {
+      this.formRun = { name: '', date: '', email: '', phone: '', distance: '', payment: '', isCreateProfile: false };
     },
+
+    formAuthSuccessHandler(formData) {
+      console.log(formData)
+      //TODO создать AuthModule В store и добавлять пользователей в localStorage для будущей авторизации через страницу profile
+    },
+
     showErrorNotification(message) {
       this.toast.error(message);
     },
     showSuccessNotification(message) {
       this.toast.success(message);
-    }
+    },
   }
 }
 </script>
