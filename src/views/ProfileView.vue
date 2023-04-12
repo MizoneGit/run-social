@@ -11,7 +11,7 @@
     <v-form-run
         v-else-if="isAuth && !isLoading"
         :participant="formRun"
-        :settings-form="{ buttonText: 'Сохранить' }"
+        :settings-form="{ buttonText: 'Сохранить', disableCheckbox: true }"
         @success="formRunSuccessHandler"
         @error="showErrorNotification"
     />
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapState} from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import VFormAuth from "@/components/VFormAuth.vue";
 import VFormRun from "@/components/VFormRun.vue";
 import { useToast } from "vue-toastification";

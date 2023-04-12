@@ -12,6 +12,7 @@
              label-text="Дата рождения"
              type="date"
              name="date"
+             :max="maxBirthdate"
              :isError="v$.form.date.$invalid && v$.form.date.$error"
              :errorMessage="v$.form.date?.$errors[0]?.$message"
              @blur="v$.form.date.$touch"
@@ -49,6 +50,7 @@
              @blur="v$.form.payment.$touch"
     />
     <v-checkbox
+        v-if="!settingsForm.disableCheckbox"
         v-model="form.isCreateProfile"
         label-text="Согласие на создание профиля "
         name="createProfile"
@@ -69,18 +71,20 @@ export default {
   props: {
     participant: {
       type: Object,
-      default: () => ({ name: '', date: '', email: '', phone: '', distance: '', payment: '', isCreateProfile: false })
+      default: () => ({ name: '', date: new Date().toISOString().substr(0, 10), email: '', phone: '', distance: '', payment: '', isCreateProfile: false })
     },
     settingsForm: {
       type: Object,
       default: () => ({
-        buttonText: 'Отправить'
+        buttonText: 'Отправить',
+        disableCheckbox: false
       })
     }
   },
   data() {
     return {
       v$: useVuelidate(),
+      maxBirthdate: this.getMaxBirthdate(),
       optionsDistance: [
         { value: 3, text: '3 км' },
         { value: 5, text: '5 км' },
@@ -137,7 +141,12 @@ export default {
     resetForm() {
       this.form = { name: '', date: '', email: '', phone: '', distance: '', payment: '', isCreateProfile: false };
       this.v$.form.$reset();
-    }
+    },
+    getMaxBirthdate() {
+      const today = new Date();
+      const maxBirthdate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate() + 5);
+      return maxBirthdate.toISOString().substr(0, 10);
+    },
   }
 }
 </script>

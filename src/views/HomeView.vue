@@ -5,7 +5,6 @@
           v-if="!stepAuth"
           @error="showErrorNotification"
           @success="formRunSuccessHandler"
-          :participant="formRun"
           :settings-form="{ buttonText: 'Отправить заявку' }"
           ref="VFormRun"
       />
@@ -28,7 +27,7 @@
 import { useToast } from "vue-toastification";
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers, minLength, maxLength, maxValue, minValue, numeric } from '@vuelidate/validators';
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import VFormAuth from "@/components/VFormAuth.vue";
 import VFormRun from "@/components/VFormRun.vue";
 
