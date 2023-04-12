@@ -12,7 +12,8 @@
       </div>
     </div>
     <div class="v-input__inner">
-      <input class="v-input__input" v-bind="$attrs" :value="modelValue" @input="update">
+      <input v-if="mask" class="v-input__input" v-mask="mask" v-bind="$attrs" :value="modelValue" @input="update">
+      <input v-else class="v-input__input" v-bind="$attrs" :value="modelValue" @input="update">
     </div>
     <div v-if="isError" class="v-input__error">{{ errorMessage }}</div>
   </div>
@@ -36,6 +37,10 @@ export default {
       default: ''
     },
     tooltipMessage: {
+      type: String,
+      default: ''
+    },
+    mask: {
       type: String,
       default: ''
     }

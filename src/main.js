@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import uiComponents from '@/components/UI/index'
 import Toast from "vue-toastification";
+import VueTheMask from 'vue-the-mask';
 
 import Vue3EasyDataTable from 'vue3-easy-data-table';
 import 'vue3-easy-data-table/dist/style.css';
@@ -19,6 +20,7 @@ uiComponents.forEach(component => {
 app
     .use(store)
     .use(router)
+    .use(VueTheMask)
     .use(Toast, {
         position: 'bottom-center',
         timeout: 3000,

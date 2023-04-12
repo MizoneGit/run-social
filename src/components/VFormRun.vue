@@ -29,6 +29,7 @@
              label-text="Телефон"
              type="text"
              name="phone"
+             mask="+7 ### ### ## ##"
              :isError="v$.form.phone.$invalid && v$.form.phone.$error"
              :errorMessage="v$.form.phone?.$errors[0]?.$message"
              @blur="v$.form.phone.$touch"
