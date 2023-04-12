@@ -32,9 +32,6 @@ export default {
     ...mapMutations({
       addParticipants: 'participants/addParticipants'
     })
-  },
-  mounted() {
-    this.loadDefaultParticipants();
   }
 }
 </script>
