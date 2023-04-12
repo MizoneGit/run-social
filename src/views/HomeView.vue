@@ -1,21 +1,25 @@
 <template>
   <main>
-    <VFormRun
-        v-if="!stepAuth"
-        @error="showErrorNotification"
-        @success="formRunSuccessHandler"
-        @reset="formRunResetHandler"
-        :participant="formRun"
-        :settings-form="{ buttonText: 'Отправить заявку' }"
-        ref="VFormRun"
-    />
-    <form-auth
-        v-else
-        :form-object="formAuth"
-        :settings-form="{ readOnlyFields: { email: true, password: false }, buttonText: 'Зарегистрироваться' }"
-        @success="formAuthSuccessHandler"
-        @error="showErrorNotification"
-    />
+    <template v-if="!isAuth">
+      <VFormRun
+          v-if="!stepAuth"
+          @error="showErrorNotification"
+          @success="formRunSuccessHandler"
+          :participant="formRun"
+          :settings-form="{ buttonText: 'Отправить заявку' }"
+          ref="VFormRun"
+      />
+      <form-auth
+          v-else
+          :form-object="formAuth"
+          :settings-form="{ readOnlyFields: { email: true, password: false }, buttonText: 'Зарегистрироваться' }"
+          @success="formAuthSuccessHandler"
+          @error="showErrorNotification"
+      />
+    </template>
+    <template v-else>
+      <p>Заявку можно отредактировать перейдя по <router-link to="/profile">ссылке</router-link></p>
+    </template>
   </main>
 </template>
 
@@ -23,8 +27,8 @@
 import { useToast } from "vue-toastification";
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers, minLength, maxLength, maxValue, minValue, numeric } from '@vuelidate/validators';
-import { mapMutations } from "vuex";
-import FormAuth from "@/components/formAuth.vue";
+import {mapActions, mapGetters, mapMutations} from "vuex";
+import FormAuth from "@/components/VFormAuth.vue";
 import VFormRun from "@/components/VFormRun.vue";
 
 export default {
@@ -86,13 +90,16 @@ export default {
     }
   },
   computed: {
-    isReadySendFormData() {
-      return Object.keys(this.v$.form).some(key => this.v$.form[key].$invalid && this.v$.form[key].$error);
-    }
+    ...mapGetters({
+      isAuth: 'auth/getAuth'
+    })
   },
   methods: {
     ...mapMutations({
       addParticipants: 'participants/addParticipants'
+    }),
+    ...mapActions({
+      registerUser: 'auth/registerUser'
     }),
     formRunSuccessHandler(formData) {
       this.formAuth.email = formData.email;
@@ -104,13 +111,14 @@ export default {
       }
       this.$refs.VFormRun.resetForm();
     },
-    formRunResetHandler() {
-      this.formRun = { name: '', date: '', email: '', phone: '', distance: '', payment: '', isCreateProfile: false };
-    },
 
     formAuthSuccessHandler(formData) {
-      console.log(formData)
-      //TODO создать AuthModule В store и добавлять пользователей в localStorage для будущей авторизации через страницу profile
+        const res = this.registerUser(formData);
+        if (res.status === 'Error') {
+          this.showErrorNotification(res.message);
+        } else {
+          this.showSuccessNotification('Вы успешно зарегистрировались');
+        }
     },
 
     showErrorNotification(message) {
@@ -122,14 +130,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .v-form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 24px;
-    border: 1px solid var(--neutral-dark-gray-background-color);
-    border-radius: 12px;
-  }
-</style>

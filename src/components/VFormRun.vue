@@ -142,6 +142,13 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.v-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border: 1px solid var(--neutral-dark-gray-background-color);
+  border-radius: 12px;
+}
 </style>

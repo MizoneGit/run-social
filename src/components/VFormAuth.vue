@@ -28,7 +28,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers, minLength, maxLength } from '@vuelidate/validators';
 
 export default {
-  name: 'formRegister',
+  name: 'VFormAuth',
   props: {
     formObject: {
       type: Object,
