@@ -22,7 +22,7 @@
 export default {
   name: "VInput",
   props: {
-    modelValue: [ String ],
+    modelValue: [ String, Number ],
     labelText: {
       type: String,
       default: ''
@@ -149,6 +149,11 @@ export default {
         &::placeholder {
           color: var(--primary-dark-white-color);
         }
+      }
+
+      &:read-only {
+        pointer-events: none;
+        opacity: 0.8;
       }
     }
 
