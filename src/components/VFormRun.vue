@@ -138,7 +138,7 @@ export default {
       this.form = { name: '', date: '', email: '', phone: '', distance: '', payment: '', isCreateProfile: false };
       this.v$.form.$reset();
     }
-  },
+  }
 }
 </script>
 

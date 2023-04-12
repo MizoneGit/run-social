@@ -1,19 +1,25 @@
 <template>
   <div class="profile">
-    <h1>This is an profile page</h1>
     <v-form-auth
         v-if="!isAuth"
         :form-object="formAuth"
         :settings-form="{ readOnlyFields: { email: false, password: false }, buttonText: 'Войти' }"
         @success="formAuthSuccessHandler"
         @error="showErrorNotification"
+        ref="VFormAuth"
     />
-    <v-form-run v-else/>
+    <v-form-run
+        v-else-if="isAuth && !isLoading"
+        :participant="formRun"
+        :settings-form="{ buttonText: 'Сохранить' }"
+        @success="formRunSuccessHandler"
+        @error="showErrorNotification"
+    />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import {mapActions, mapGetters, mapState} from "vuex";
 import VFormAuth from "@/components/VFormAuth.vue";
 import VFormRun from "@/components/VFormRun.vue";
 import { useToast } from "vue-toastification";
@@ -24,9 +30,19 @@ import { useToast } from "vue-toastification";
     data() {
       return {
         toast: useToast(),
+        isLoading: false,
         formAuth: {
           email: '',
           password: ''
+        },
+        formRun: {
+          name: '',
+          date: '',
+          email: '',
+          phone: '',
+          distance: '',
+          payment: '',
+          isCreateProfile: false
         },
       }
     },
@@ -40,14 +56,29 @@ import { useToast } from "vue-toastification";
     },
     methods: {
       ...mapActions({
-        loginUser: 'auth/loginUser'
+        loginUser: 'auth/loginUser',
+        editParticipant: 'participants/editParticipant',
+        getUserParticipant: 'participants/getUserParticipant'
       }),
-      formAuthSuccessHandler(formData) {
-        const res = this.loginUser(formData);
+      async formAuthSuccessHandler(formData) {
+        const res = await this.loginUser(formData);
+        if (res.status === 'Error') {
+          const errors = res.data?.errors;
+          errors?.forEach(error => {
+            this.$refs.VFormAuth.vuelidateExternalResults.form[error.param] = error.msg;
+          });
+          this.showErrorNotification('Не все поля заполнены верно!');
+        } else {
+          await this.fetchParticipant();
+          this.showSuccessNotification('Вы успешно авторизовались!');
+        }
+      },
+      async formRunSuccessHandler(formData) {
+        const res = await this.editParticipant(formData);
         if (res.status === 'Error') {
           this.showErrorNotification(res.message);
         } else {
-          this.showSuccessNotification('Вы успешно авторизовались');
+          this.showSuccessNotification('Вы успешно изменили данные заявки!');
         }
       },
       showErrorNotification(message) {
@@ -56,16 +87,20 @@ import { useToast } from "vue-toastification";
       showSuccessNotification(message) {
         this.toast.success(message);
       },
+      async fetchParticipant() {
+        this.isLoading = true;
+        this.formRun = await this.getUserParticipant();
+        this.isLoading = false;
+      }
+    },
+    mounted() {
+      if (this.isAuth) {
+        this.fetchParticipant();
+      }
     }
   }
 </script>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
+
 </style>

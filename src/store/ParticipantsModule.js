@@ -28,7 +28,8 @@ export const ParticipantsModule = {
         addParticipants(state, participant) {
             state.participants.push(participant);
             localStorage.setItem('participants', JSON.stringify(state.participants));
-        }
+        },
+
     },
     actions: {
         async loadDefaultParticipants({ commit, dispatch }) {
@@ -43,15 +44,33 @@ export const ParticipantsModule = {
                 const response = await ParticipantsService.getParticipants();
                 const users = response.data.users;
                 commit('setParticipants', users);
-
-                return users;
             } catch (error) {
                 console.error(error);
             }
         },
+        async editParticipant({ commit, getters }, data) {
+            try {
+                const participants = getters.getParticipants;
+
+                const indexParticipant = participants?.findIndex((p) => p.guid === data.guid);
+                if (!indexParticipant) {
+                    throw new Error('Произошла ошибка поиска заявки');
+                }
+
+                participants[indexParticipant] = data;
+                commit('setParticipants', participants);
+                return { status: 'Success' }
+            } catch (e) {
+                return { status: 'Error', message: e.message };
+            }
+        },
         async getParticipantsFromLocalStorage() {
-            const participants = JSON.parse(localStorage.getItem('participants'));
+            const participants = await JSON.parse(localStorage.getItem('participants'));
             return participants || [];
+        },
+        getUserParticipant({ state, rootGetters }) {
+            const participants = state.participants;
+            return participants?.find(p => p.guid === rootGetters['auth/getUserGuid']) || {};
         }
     }
 }

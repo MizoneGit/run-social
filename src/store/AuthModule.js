@@ -1,4 +1,5 @@
 import generateGuid from "@/utils/generateGuid";
+import CustomError from "@/utils/CustomError";
 
 export const AuthModule = {
     namespaced: true,
@@ -30,7 +31,13 @@ export const AuthModule = {
                 const candidate = users?.find(u => u.email === email);
 
                 if (candidate) {
-                    throw Error('Такой пользователь уже зарегистрирован');
+                    throw CustomError.BadRequest('Ошибка регистрации', [
+                        {
+                            value: email,
+                            msg: 'Пользователь с таким email уже зарегистрирован!',
+                            param: 'email'
+                        }
+                    ]);
                 }
 
                 const user = { guid: getters.getUserGuid, email, password };
@@ -39,8 +46,8 @@ export const AuthModule = {
                 localStorage.setItem('users', JSON.stringify(users));
                 commit('setAuth', true);
                 return { status: 'Success' };
-            } catch (e) {
-                return { status: 'Error', message: e.message };
+            } catch (error) {
+                return { status: 'Error', data: error };
             }
         },
         async loginUser({ commit, dispatch }, { email, password }) {
@@ -50,23 +57,34 @@ export const AuthModule = {
                 const candidate = users?.find(u => u.email === email);
 
                 if (!candidate) {
-                    throw new Error('Такой пользователь не зарегистрирован');
+                    throw CustomError.BadRequest('Ошибка авторизации', [
+                        {
+                            value: email,
+                            msg: 'Такой пользователь не зарегистрирован!',
+                            param: 'email'
+                        }
+                    ]);
                 }
 
                 if (candidate.password !== password) {
-                    throw new Error('Пароль введен не верно');
+                    throw CustomError.BadRequest('Ошибка авторизации', [
+                        {
+                            value: password,
+                            msg: 'Пароль введен не верно!',
+                            param: 'password'
+                        }
+                    ]);
                 }
 
                 commit('setUserGuid', candidate.guid);
                 commit('setAuth', true);
                 return { status: 'Success' };
-            } catch (e) {
-                return { status: 'Error', message: e.message };
+            } catch (error) {
+                return { status: 'Error', data: error };
             }
-
         },
-        getUserLocalStorage({ dispatch }, email) {
-            const users = dispatch('getUsersLocalStorage');
+        async getUserLocalStorage({ dispatch }, email) {
+            const users = await dispatch('getUsersLocalStorage');
             const candidate = users.find(u => u.email === email);
 
             return candidate ?? false;

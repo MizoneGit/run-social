@@ -1,7 +1,7 @@
 <template>
   <main>
     <template v-if="!isAuth">
-      <VFormRun
+      <v-form-run
           v-if="!stepAuth"
           @error="showErrorNotification"
           @success="formRunSuccessHandler"
@@ -9,12 +9,13 @@
           :settings-form="{ buttonText: 'Отправить заявку' }"
           ref="VFormRun"
       />
-      <form-auth
+      <v-form-auth
           v-else
           :form-object="formAuth"
           :settings-form="{ readOnlyFields: { email: true, password: false }, buttonText: 'Зарегистрироваться' }"
           @success="formAuthSuccessHandler"
           @error="showErrorNotification"
+          ref="VFormAuth"
       />
     </template>
     <template v-else>
@@ -28,12 +29,12 @@ import { useToast } from "vue-toastification";
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers, minLength, maxLength, maxValue, minValue, numeric } from '@vuelidate/validators';
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import FormAuth from "@/components/VFormAuth.vue";
+import VFormAuth from "@/components/VFormAuth.vue";
 import VFormRun from "@/components/VFormRun.vue";
 
 export default {
   name: 'HomeView',
-  components: {VFormRun, FormAuth },
+  components: {VFormRun, VFormAuth },
   data() {
     return {
       v$: useVuelidate(),
@@ -91,7 +92,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isAuth: 'auth/getAuth'
+      isAuth: 'auth/getAuth',
+      userGuid: 'auth/getUserGuid'
     })
   },
   methods: {
@@ -103,24 +105,33 @@ export default {
     }),
     formRunSuccessHandler(formData) {
       this.formAuth.email = formData.email;
+
       this.formRun = formData;
+      formData.guid = this.userGuid;
+
       this.addParticipants(formData);
+
       this.showSuccessNotification('Вы успешно зарегистрировались в забеге!');
+
       if (formData.isCreateProfile) {
         this.stepAuth = true;
       }
+
       this.$refs.VFormRun.resetForm();
     },
+    async formAuthSuccessHandler(formData) {
+      const res = await this.registerUser(formData);
 
-    formAuthSuccessHandler(formData) {
-        const res = this.registerUser(formData);
-        if (res.status === 'Error') {
-          this.showErrorNotification(res.message);
-        } else {
-          this.showSuccessNotification('Вы успешно зарегистрировались');
-        }
+      if (res.status === 'Error') {
+        const errors = res.data?.errors;
+        errors?.forEach(error => {
+          this.$refs.VFormAuth.vuelidateExternalResults.form[error.param] = error.msg;
+        });
+        this.showErrorNotification('Не все поля заполнены верно!');
+      } else {
+        this.showSuccessNotification('Вы успешно зарегистрировались!');
+      }
     },
-
     showErrorNotification(message) {
       this.toast.error(message);
     },

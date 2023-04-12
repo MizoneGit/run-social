@@ -9,6 +9,7 @@
         :isError="v$.form.email.$invalid && v$.form.email.$error"
         :errorMessage="v$.form.email?.$errors[0]?.$message"
         @blur="v$.form.email.$touch"
+        @update:modelValue="updateProperty($event, 'email')"
     />
     <v-input
         v-model="form.password"
@@ -18,6 +19,7 @@
         :isError="v$.form.password.$invalid && v$.form.password.$error"
         :errorMessage="v$.form.password?.$errors[0]?.$message"
         @blur="v$.form.password.$touch"
+        @update:modelValue="updateProperty($event, 'password')"
     />
     <v-button :text="settingsForm.buttonText" :disabled="isReadyFormData"/>
   </form>
@@ -45,12 +47,18 @@ export default {
             buttonText: 'Отправить'
           }
       )
-    }
+    },
   },
   data() {
     return {
       v$: useVuelidate(),
-      form: { ...this.formObject }
+      form: { ...this.formObject },
+      vuelidateExternalResults: {
+        form: {
+          email: false,
+          password: false
+        }
+      }
     }
   },
   validations () {
@@ -75,13 +83,16 @@ export default {
   },
   methods: {
     submitHandler() {
+      this.v$.form.$touch();
       if (this.v$.form.$invalid) {
-        this.v$.form.$touch();
         this.$emit('error', 'Не все поля заполнены верно!');
         return;
       }
 
       this.$emit('success', this.form);
+    },
+    updateProperty(value, propertyName) {
+      this.vuelidateExternalResults.form[propertyName] = '';
     }
   }
 }
