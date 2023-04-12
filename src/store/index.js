@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import { ParticipantsModule } from "@/store/ParticipantsModule";
+import { AuthModule } from "@/store/AuthModule";
 export default createStore({
     state: {
     },
@@ -10,6 +11,7 @@ export default createStore({
     actions: {
     },
     modules: {
-        participants: ParticipantsModule
+        participants: ParticipantsModule,
+        auth: AuthModule
     }
 })
