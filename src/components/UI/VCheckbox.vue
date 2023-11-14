@@ -2,13 +2,34 @@
   <div :class="['v-checkbox', { 'v-checkbox--error': isError }]">
     <label class="v-checkbox__box">
       <span class="v-checkbox__inner">
-        <input class="v-checkbox__input" v-bind="$attrs" type="checkbox" :checked="modelValue" @input="update">
+        <input
+          class="v-checkbox__input"
+          v-bind="$attrs"
+          type="checkbox"
+          :checked="modelValue"
+          @input="update"
+        />
       </span>
       <span v-if="labelText" class="v-checkbox__label">
         <span class="v-checkbox__text">{{ labelText }}</span>
-        <span class="v-checkbox__icon" data-description="Maximum 100 characters. No HTML or emoji allowed" title="Maximum 100 characters. No HTML or emoji allowed">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M14.6673 7.99992C14.6673 11.6818 11.6825 14.6666 8.00065 14.6666C4.31875 14.6666 1.33398 11.6818 1.33398 7.99992C1.33398 4.31802 4.31875 1.33325 8.00065 1.33325C11.6825 1.33325 14.6673 4.31802 14.6673 7.99992ZM8.00065 7.33325C8.36884 7.33325 8.66732 7.63173 8.66732 7.99992V11.3338C8.66732 11.702 8.36884 12.0005 8.00065 12.0005C7.63246 12.0005 7.33398 11.702 7.33398 11.3338V7.99992C7.33398 7.63173 7.63246 7.33325 8.00065 7.33325ZM8.00065 5.99992C8.36884 5.99992 8.66732 5.70144 8.66732 5.33325C8.66732 4.96506 8.36884 4.66659 8.00065 4.66659C7.63246 4.66659 7.33398 4.96506 7.33398 5.33325C7.33398 5.70144 7.63246 5.99992 8.00065 5.99992Z" fill="#9A9FA5"/>
+        <span
+          class="v-checkbox__icon"
+          data-description="Maximum 100 characters. No HTML or emoji allowed"
+          title="Maximum 100 characters. No HTML or emoji allowed"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M14.6673 7.99992C14.6673 11.6818 11.6825 14.6666 8.00065 14.6666C4.31875 14.6666 1.33398 11.6818 1.33398 7.99992C1.33398 4.31802 4.31875 1.33325 8.00065 1.33325C11.6825 1.33325 14.6673 4.31802 14.6673 7.99992ZM8.00065 7.33325C8.36884 7.33325 8.66732 7.63173 8.66732 7.99992V11.3338C8.66732 11.702 8.36884 12.0005 8.00065 12.0005C7.63246 12.0005 7.33398 11.702 7.33398 11.3338V7.99992C7.33398 7.63173 7.63246 7.33325 8.00065 7.33325ZM8.00065 5.99992C8.36884 5.99992 8.66732 5.70144 8.66732 5.33325C8.66732 4.96506 8.36884 4.66659 8.00065 4.66659C7.63246 4.66659 7.33398 4.96506 7.33398 5.33325C7.33398 5.70144 7.63246 5.99992 8.00065 5.99992Z"
+              fill="#9A9FA5"
+            />
           </svg>
         </span>
       </span>
@@ -19,9 +40,9 @@
 
 <script>
 export default {
-  name: "VCheckbox",
+  name: 'VCheckbox',
   props: {
-    modelValue: [ Boolean ],
+    modelValue: [Boolean],
     labelText: {
       type: String,
       default: ''
@@ -41,8 +62,8 @@ export default {
   },
   methods: {
     update(event) {
-      this.$emit('update:modelValue', event.target.checked);
-    },
+      this.$emit('update:modelValue', event.target.checked)
+    }
   }
 }
 </script>

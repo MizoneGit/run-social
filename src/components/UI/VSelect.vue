@@ -3,15 +3,28 @@
     <div v-if="labelText" class="v-select__label">
       <span class="v-select__text">{{ labelText }}</span>
       <div class="v-select__icon" title="Maximum 100 characters. No HTML or emoji allowed">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M14.6673 7.99992C14.6673 11.6818 11.6825 14.6666 8.00065 14.6666C4.31875 14.6666 1.33398 11.6818 1.33398 7.99992C1.33398 4.31802 4.31875 1.33325 8.00065 1.33325C11.6825 1.33325 14.6673 4.31802 14.6673 7.99992ZM8.00065 7.33325C8.36884 7.33325 8.66732 7.63173 8.66732 7.99992V11.3338C8.66732 11.702 8.36884 12.0005 8.00065 12.0005C7.63246 12.0005 7.33398 11.702 7.33398 11.3338V7.99992C7.33398 7.63173 7.63246 7.33325 8.00065 7.33325ZM8.00065 5.99992C8.36884 5.99992 8.66732 5.70144 8.66732 5.33325C8.66732 4.96506 8.36884 4.66659 8.00065 4.66659C7.63246 4.66659 7.33398 4.96506 7.33398 5.33325C7.33398 5.70144 7.63246 5.99992 8.00065 5.99992Z" fill="#9A9FA5"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M14.6673 7.99992C14.6673 11.6818 11.6825 14.6666 8.00065 14.6666C4.31875 14.6666 1.33398 11.6818 1.33398 7.99992C1.33398 4.31802 4.31875 1.33325 8.00065 1.33325C11.6825 1.33325 14.6673 4.31802 14.6673 7.99992ZM8.00065 7.33325C8.36884 7.33325 8.66732 7.63173 8.66732 7.99992V11.3338C8.66732 11.702 8.36884 12.0005 8.00065 12.0005C7.63246 12.0005 7.33398 11.702 7.33398 11.3338V7.99992C7.33398 7.63173 7.63246 7.33325 8.00065 7.33325ZM8.00065 5.99992C8.36884 5.99992 8.66732 5.70144 8.66732 5.33325C8.66732 4.96506 8.36884 4.66659 8.00065 4.66659C7.63246 4.66659 7.33398 4.96506 7.33398 5.33325C7.33398 5.70144 7.63246 5.99992 8.00065 5.99992Z"
+            fill="#9A9FA5"
+          />
         </svg>
       </div>
       <div class="v-select__tooltipster">{{ tooltipMessage }}</div>
     </div>
     <div class="v-select__inner">
       <select class="v-select__input" name="" id="" :value="modelValue" @change="update">
-        <option v-for="(option, key) in options" :value="option.value" :key="key">{{ option.text }}</option>
+        <option v-for="(option, key) in options" :value="option.value" :key="key">
+          {{ option.text }}
+        </option>
       </select>
     </div>
     <div v-if="isError" class="v-select__error">{{ errorMessage }}</div>
@@ -20,9 +33,9 @@
 
 <script>
 export default {
-  name: "VSelect",
+  name: 'VSelect',
   props: {
-    modelValue: [ String ],
+    modelValue: [String],
     labelText: {
       type: String,
       default: ''
@@ -46,8 +59,8 @@ export default {
   },
   methods: {
     update(event) {
-      this.$emit('update:modelValue', event.target.value);
-    },
+      this.$emit('update:modelValue', event.target.value)
+    }
   }
 }
 </script>
@@ -108,7 +121,6 @@ export default {
     color: var(--primary-orange-color);
   }
   &__inner {
-
   }
   &__input {
     padding: 13px;

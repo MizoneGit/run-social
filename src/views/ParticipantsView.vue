@@ -1,23 +1,17 @@
 <template>
   <div>
-    <easy-data-table
-        :headers="headers"
-        :items="participants"
-        sort-by="date"
-        sort-type="desc"
-    />
+    <easy-data-table :headers="headers" :items="participants" sort-by="date" sort-type="desc" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 export default {
-  name: "ParticipantsView",
+  name: 'ParticipantsView',
   components: { EasyDataTable: window['vue3-easy-data-table'] },
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     ...mapGetters({
@@ -27,7 +21,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadDefaultParticipants: "participants/loadDefaultParticipants"
+      loadDefaultParticipants: 'participants/loadDefaultParticipants'
     }),
     ...mapMutations({
       addParticipants: 'participants/addParticipants'
@@ -36,6 +30,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

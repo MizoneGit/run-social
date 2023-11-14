@@ -1,12 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
-import { onMounted } from "vue";
-import { useStore } from "vuex";
+import { onMounted } from 'vue'
+import { useStore } from 'vuex'
 
-const store = useStore();
+const store = useStore()
 onMounted(() => {
-  store.dispatch('participants/loadDefaultParticipants');
+  store.dispatch('participants/loadDefaultParticipants')
 })
 </script>
 
